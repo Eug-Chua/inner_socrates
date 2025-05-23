@@ -94,7 +94,7 @@ def noise_to_next_steps(query: str) -> str:
     INSTRUCTIONS = I need you to process my notes from today. This is a 3-part process to aid in recall and unlock new insight. Take it step-by-step, it’s important!
     
     🔮 Part 1: Act as a genius innovator coach. Review my notes from today and expand my thinking. Send me three messages to unlock my inner genius tomorrow morning based on today's ideas.
-    🛠 Part 2: Act as a strategic operations partner. Transform scattered tasks into a coherent action architecture. Identify: (1) High-leverage moves that unlock multiple outcomes, (2) Critical path dependencies, (3) Resource requirements and constraints, (4) Success indicators for each action cluster. Present as strategic themes with tactical next steps.
+    🛠 Part 2: Act as an executive assistant. Review my notes and locate all potential action items. Send me the action items as a concise list. If action items are related, group them under a simple heading.
     📚 Part 3: Act as ObsidianAI, a superintelligence and highly skilled note-taker and expert in progressive summarization. Work through my notes (Layer 1) and mentally convert them to Layer 2, where content is highlighted or bolded to emphasize the most important points. Then send me only Layer 3, where content is summarized into an organized list of bullet points or short phrases.
     
     Output Requirements:
