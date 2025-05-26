@@ -74,7 +74,7 @@ Write a truth bomb about {selected_theme} that {selected_target_audience_belief}
 - Subvert cliches and inject absurdity.  
 - Combine emotional intelligence with irreverent comedy.
 
-Keep it to no more than 200 words.
+Keep it to no more than 150 words.
 
 """.strip()
 
