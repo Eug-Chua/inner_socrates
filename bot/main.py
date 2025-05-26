@@ -38,7 +38,7 @@ async def handle_steps_button(update: Update, context: ContextTypes.DEFAULT_TYPE
     pending_steps[user_id] = True
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
-        "🧭 Drop your thoughts here. I’ll help you turn your noise into next steps."
+        "💡 Drop your thoughts here. I’ll help you turn your noise into next steps."
     )
 
 # 🧩 Examine the Unexamined — waits for user to send input
@@ -48,7 +48,7 @@ async def handle_examine_button(update: Update, context: ContextTypes.DEFAULT_TY
     user_id = update.effective_user.id
     pending_examine[user_id] = True
     await update.callback_query.answer()
-    await update.callback_query.edit_message_text("🔎 Share what's on your mind. Let's deepen them.")
+    await update.callback_query.edit_message_text("🧐 Share what's on your mind. Let's deepen them.")
 
 # Handles all incoming text based on previous button context
 
@@ -77,7 +77,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         [InlineKeyboardButton("🧠 Thought for the Day", callback_data="thought")],
         [InlineKeyboardButton("🔍 Turn Noise into Next Steps", callback_data="steps")],
-        [InlineKeyboardButton("🧩 Examine the Unexamined", callback_data="examine")],
+        [InlineKeyboardButton("🧩 Examine Your Unexamined Thoughts", callback_data="examine")],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
