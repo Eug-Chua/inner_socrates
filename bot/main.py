@@ -1,10 +1,11 @@
 import os, sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     ApplicationBuilder, CommandHandler, CallbackQueryHandler,
     MessageHandler, ContextTypes, filters,
 )
-from src.prompts import(thought_of_the_day, coach_insight,executive_assistant, obsidian_ai, socratic_questioner, pattern_detective)
+from src.prompts import (thought_of_the_day, coach_insight,executive_assistant, obsidian_ai, socratic_questioner, pattern_detective)
 
 from dotenv import load_dotenv
 
@@ -123,14 +124,10 @@ app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
 # ── ENTRYPOINT – **NO** asyncio.run() ───────────────
 if __name__ == "__main__":
-    # run_webhook blocks; it sets up an aiohttp server that
-    #   * binds 0.0.0.0:$PORT
-    #   * responds 200 OK on GET /
-    #   * processes Telegram POSTs at /telegram
     app.run_webhook(
         listen="0.0.0.0",
-        port=PORT,            # Railway health-check port
+        port=PORT,
         url_path="telegram",
         webhook_url=WEBHOOK_URL,
-        stop_signals=None,    # don’t touch the global loop
+        stop_signals=None,
     )
