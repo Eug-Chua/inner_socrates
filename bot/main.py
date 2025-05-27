@@ -129,7 +129,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
-    # Register handlers
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(handle_thought, pattern="^thought$"))
     app.add_handler(CallbackQueryHandler(handle_steps_button, pattern="^steps$"))
@@ -138,20 +137,12 @@ async def main():
     app.add_handler(CallbackQueryHandler(handle_examine_lens_choice, pattern="^examine_.*$"))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-    # Manual webhook setup
-    await app.initialize()
-    await app.bot.set_webhook(url=WEBHOOK_URL)
-    info = await app.bot.get_webhook_info()
-    print(f"✅ Webhook registered at: {info.url}")
-
-    await app.start()
-
-    # Start webhook server using Application's built-in webhook listener
     await app.run_webhook(
         listen="0.0.0.0",
         port=int(os.environ.get("PORT", 8555)),
         webhook_url=WEBHOOK_URL
     )
+
 
 
 if __name__ == "__main__":
