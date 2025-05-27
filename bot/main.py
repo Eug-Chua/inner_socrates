@@ -4,6 +4,8 @@ from telegram.ext import (
     ApplicationBuilder, CommandHandler, CallbackQueryHandler,
     MessageHandler, ContextTypes, filters,
 )
+from src.prompts import(thought_of_the_day, coach_insight,executive_assistant, obsidian_ai, socratic_questioner, pattern_detective)
+
 from dotenv import load_dotenv
 
 # ── ENV ─────────────────────────────────────────────
@@ -111,17 +113,13 @@ app = (
     .token(BOT_TOKEN)
     .build()
 )
-
-async def main():
-    app = ApplicationBuilder().token(BOT_TOKEN).build()
-
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(CallbackQueryHandler(handle_thought, pattern="^thought$"))
-    app.add_handler(CallbackQueryHandler(handle_steps_button, pattern="^steps$"))
-    app.add_handler(CallbackQueryHandler(handle_examine_button, pattern="^examine$"))
-    app.add_handler(CallbackQueryHandler(handle_noise_lens_choice, pattern="^noise_.*$"))
-    app.add_handler(CallbackQueryHandler(handle_examine_lens_choice, pattern="^examine_.*$"))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+app.add_handler(CommandHandler("start", start))
+app.add_handler(CallbackQueryHandler(handle_thought, pattern="^thought$"))
+app.add_handler(CallbackQueryHandler(handle_steps_button, pattern="^steps$"))
+app.add_handler(CallbackQueryHandler(handle_examine_button, pattern="^examine$"))
+app.add_handler(CallbackQueryHandler(handle_noise_lens_choice, pattern="^noise_.*$"))
+app.add_handler(CallbackQueryHandler(handle_examine_lens_choice, pattern="^examine_.*$"))
+app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
 # ── ENTRYPOINT – **NO** asyncio.run() ───────────────
 if __name__ == "__main__":
@@ -132,6 +130,7 @@ if __name__ == "__main__":
     app.run_webhook(
         listen="0.0.0.0",
         port=PORT,            # Railway health-check port
+        url_path="telegram",
         webhook_url=WEBHOOK_URL,
         stop_signals=None,    # don’t touch the global loop
     )
