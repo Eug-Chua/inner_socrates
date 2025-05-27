@@ -138,15 +138,14 @@ async def main():
     app.add_handler(CallbackQueryHandler(handle_examine_lens_choice, pattern="^examine_.*$"))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-    # Initialize manually
+    # Manually initialize + webhook
     await app.initialize()
     await app.bot.set_webhook(url=WEBHOOK_URL)
     print(f"✅ Webhook registered at: {WEBHOOK_URL}")
     await app.start()
 
-    # Keep alive forever
+    # ✅ Keep it alive forever
     await asyncio.Event().wait()
 
 if __name__ == "__main__":
-    import asyncio
     asyncio.run(main())
