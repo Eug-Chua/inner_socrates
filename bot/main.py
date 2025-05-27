@@ -156,7 +156,6 @@ async def main():
         await app.initialize()
         await app.bot.set_webhook(url=WEBHOOK_URL)
         print(f"✅ Webhook registered at: {WEBHOOK_URL}")
-        await keep_http_alive()  # Keeps Railway happy
 
         await app.start()
         await app.updater.start_webhook(
