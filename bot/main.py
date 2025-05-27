@@ -127,11 +127,12 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("🧭 Try /start and choose a reflection path.")
 
 # Entrypoint
+
 async def healthcheck(request):
     return web.Response(text="✅ InnerSocrates bot is alive.")
 
 async def keep_http_alive():
-    port = int(os.environ.get("PORT", 8555))
+    port = int(os.environ.get("PORT", 8080))
     app = web.Application()
     app.add_routes([web.get("/", healthcheck)])
     runner = web.AppRunner(app)
@@ -155,16 +156,18 @@ async def main():
         await app.initialize()
         await app.bot.set_webhook(url=WEBHOOK_URL)
         print(f"✅ Webhook registered at: {WEBHOOK_URL}")
-        await app.start()
+        await keep_http_alive()  # Keeps Railway happy
 
-        # Run bot and HTTP server concurrently
-        await asyncio.gather(
-            keep_http_alive(),  # Keeps port open for Railway
-            asyncio.Event().wait()  # Keeps process alive forever
+        await app.start()
+        await app.updater.start_webhook(
+            listen="0.0.0.0",
+            port=int(os.environ.get("PORT", 8080)),
+            webhook_url=WEBHOOK_URL
         )
 
     except Exception as e:
         print(f"❌ CRASHED: {e}")
+
 
 if __name__ == "__main__":
     import asyncio
