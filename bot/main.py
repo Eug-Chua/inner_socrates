@@ -122,7 +122,6 @@ if __name__ == "__main__":
     print("📡 running in long-polling mode …")
     app.run_polling(
         allowed_updates     = Update.ALL_TYPES,
-        reset_webhook       = True,   # nuke old pollers & webhooks
         drop_pending_updates= True,
         stop_signals        = None,
         close_loop          = False,
