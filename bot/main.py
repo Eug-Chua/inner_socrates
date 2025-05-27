@@ -163,7 +163,8 @@ async def main():
         port=8443,  # Telegram webhook listener
         webhook_url=WEBHOOK_URL,
     )
-
+    
+    print("✅ Both servers started — waiting forever to keep Railway alive.")
     await asyncio.Event().wait()  # Keeps container alive
 
 
