@@ -129,31 +129,32 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
-    # Handlers (same as before)
+    # Handlers
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(handle_thought, pattern="^thought$"))
     app.add_handler(CallbackQueryHandler(handle_steps_button, pattern="^steps$"))
     app.add_handler(CallbackQueryHandler(handle_examine_button, pattern="^examine$"))
     app.add_handler(CallbackQueryHandler(handle_noise_lens_choice, pattern="^noise_.*$"))
     app.add_handler(CallbackQueryHandler(handle_examine_lens_choice, pattern="^examine_.*$"))
-
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-    # Set webhook
+    # Initialize manually
+    await app.initialize()
     await app.bot.set_webhook(url=WEBHOOK_URL)
     print("✅ Webhook set. Listening...")
 
-    # Start webhook server
-    await app.run_webhook(
+    # Start the webhook server without trying to close the event loop
+    await app.start()
+    await app.updater.start_webhook(
         listen="0.0.0.0",
         port=int(os.environ.get("PORT", 8555)),
         webhook_url=WEBHOOK_URL,
     )
 
+    # Keep it alive
+    await asyncio.Event().wait()
+
+
 if __name__ == "__main__":
     import asyncio
-
-    # Assumes Railway runs Python with an event loop (common)
-    loop = asyncio.get_event_loop()
-    loop.create_task(main())
-    loop.run_forever()
+    asyncio.run(main())
