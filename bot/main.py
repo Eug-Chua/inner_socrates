@@ -75,7 +75,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # /start command with button UI
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
-        [InlineKeyboardButton("🧠 Thought for the Day", callback_data="thought")],
+        [InlineKeyboardButton("🧠 Musing for the Day", callback_data="thought")],
         [InlineKeyboardButton("🔍 Turn Noise into Next Steps", callback_data="steps")],
         [InlineKeyboardButton("🧩 Examine Your Unexamined Thoughts", callback_data="examine")],
     ]
