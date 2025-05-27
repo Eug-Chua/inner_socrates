@@ -1,8 +1,9 @@
-import sys
 import os
+import sys
 import asyncio
 from aiohttp import web
 import nest_asyncio
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -33,26 +34,37 @@ WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 pending_noise_input = {}
 pending_examine_input = {}
 
-# /start command
+# Healthcheck route
+async def healthcheck(request):
+    return web.Response(text="✅ InnerSocrates bot is alive.")
+
+async def start_health_server():
+    port = int(os.environ.get("PORT", 8080))
+    app = web.Application()
+    app.router.add_get("/", healthcheck)
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, "0.0.0.0", port)
+    await site.start()
+    print(f"🌐 Healthcheck server started on port {port} (/).")
+
+# Telegram handlers
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         [InlineKeyboardButton("🧠 Today's Musing", callback_data="thought")],
         [InlineKeyboardButton("🔍 Turn Noise into Next Steps", callback_data="steps")],
         [InlineKeyboardButton("🧩 Examine Your Unexamined Thoughts", callback_data="examine")],
     ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text(
         "🌞 I'm your inner Socrates.\nTap a button below to begin your daily mental upgrade:",
-        reply_markup=reply_markup,
+        reply_markup=InlineKeyboardMarkup(keyboard),
     )
 
-# Thought for the Day
 async def handle_thought(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message_text = thought_of_the_day()
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(message_text)
 
-# Noise to Next Steps
 async def handle_steps_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     pending_noise_input[user_id] = True
@@ -76,7 +88,6 @@ async def handle_noise_lens_choice(update: Update, context: ContextTypes.DEFAULT
 
     await update.callback_query.edit_message_text(result, parse_mode="HTML")
 
-# Examine Your Thoughts
 async def handle_examine_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     pending_examine_input[user_id] = True
@@ -100,7 +111,6 @@ async def handle_examine_lens_choice(update: Update, context: ContextTypes.DEFAU
 
     await update.callback_query.edit_message_text(result, parse_mode="HTML")
 
-# Main message handler
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     query = update.message.text.strip()
@@ -127,19 +137,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text("🧭 Try /start and choose a reflection path.")
 
-# Entrypoint
-async def healthcheck(request):
-    return web.Response(text="✅ InnerSocrates bot is alive.")
-
-async def start_health_server():
-    app = web.Application()
-    app.router.add_get("/", healthcheck)
-    runner = web.AppRunner(app)
-    await runner.setup()
-    site = web.TCPSite(runner, "0.0.0.0", int(os.environ.get("PORT", 8080)))
-    await site.start()
-    print("🌐 Healthcheck server started on /")
-
+# Combined startup
 async def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
@@ -157,24 +155,20 @@ async def main():
     print("✅ Webhook registered.")
     print("🚀 Starting healthcheck server AND Telegram webhook...")
 
-    await start_health_server()  # this binds to Railway's $PORT
-    await app.start()
+    await start_health_server()  # this binds to Railway's PORT
 
-    # This binds to a random internal port and handles Telegram webhook
+    await app.start()
     await app.updater.start_webhook(
         listen="0.0.0.0",
-        port=8443,  # not the Railway port
-        webhook_url=WEBHOOK_URL
+        port=8443,  # Telegram webhook listener
+        webhook_url=WEBHOOK_URL,
     )
 
-    await asyncio.Event().wait()
+    await asyncio.Event().wait()  # Keeps container alive
+
 
 if __name__ == "__main__":
-    import nest_asyncio
-    import asyncio
-
     nest_asyncio.apply()
     loop = asyncio.get_event_loop()
     loop.create_task(main())
     loop.run_forever()
-
