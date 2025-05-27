@@ -1,35 +1,41 @@
-import os, sys
+import os, sys, asyncio
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     ApplicationBuilder, CommandHandler, CallbackQueryHandler,
     MessageHandler, ContextTypes, filters,
 )
-from src.prompts import (thought_of_the_day, coach_insight,executive_assistant, obsidian_ai, socratic_questioner, pattern_detective)
 
+from src.prompts import (
+    thought_of_the_day, coach_insight, executive_assistant,
+    obsidian_ai, socratic_questioner, pattern_detective
+)
 from dotenv import load_dotenv
 
-# ── ENV ─────────────────────────────────────────────
-load_dotenv()
-BOT_TOKEN   = os.environ["TELEGRAM_TOKEN"]
-PUBLIC_URL  = os.environ["WEBHOOK_URL"]            
-PORT        = int(os.environ.get("PORT", "8080"))  
-WEBHOOK_URL = f"{PUBLIC_URL}/telegram"  
 
-# ── STATE ───────────────────────────────────────────
+# ── env ─────────────────────────────────────────────
+load_dotenv()
+BOT_TOKEN = os.environ["TELEGRAM_TOKEN"]
+
+# ── state ───────────────────────────────────────────
 pending_noise_input, pending_examine_input = {}, {}
 
-# Telegram handlers
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    keyboard = [
+# ── handlers (paste full versions) ─────────────────
+async def start(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    kb = [
         [InlineKeyboardButton("🧠 Today's Musing", callback_data="thought")],
         [InlineKeyboardButton("🔍 Turn Noise into Next Steps", callback_data="steps")],
         [InlineKeyboardButton("🧩 Examine Your Unexamined Thoughts", callback_data="examine")],
     ]
     await update.message.reply_text(
-        "🌞 I'm your inner Socrates.\nTap a button below to begin your daily mental upgrade:",
-        reply_markup=InlineKeyboardMarkup(keyboard),
+        "🌞 I'm your inner Socrates.\nTap a button to begin your mental upgrade:",
+        reply_markup=InlineKeyboardMarkup(kb)
     )
+
+async def handle_thought(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    await update.callback_query.answer()
+    await update.callback_query.edit_message_text(thought_of_the_day())
 
 async def handle_thought(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message_text = thought_of_the_day()
@@ -108,7 +114,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text("🧭 Try /start and choose a reflection path.")
 
-# ── BUILD APPLICATION ──────────────────────────────
+# ── build Application ──────────────────────────────
 app = (
     ApplicationBuilder()
     .token(BOT_TOKEN)
@@ -122,18 +128,11 @@ app.add_handler(CallbackQueryHandler(handle_noise_lens_choice, pattern="^noise_.
 app.add_handler(CallbackQueryHandler(handle_examine_lens_choice, pattern="^examine_.*$"))
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-# ── ENTRYPOINT ─────────────────────────────────────
+# ── entrypoint: run_polling blocks forever ─────────
 if __name__ == "__main__":
-    try:
-        print("🚀 launching run_webhook …")
-        app.run_webhook(
-            listen="0.0.0.0",
-            port = PORT,
-            url_path="telegram",
-            webhook_url = WEBHOOK_URL,
-            stop_signals=None,
-        )
-    except Exception as err:
-        # ← any traceback will now appear in Railway logs
-        print("❌ FATAL:", err)
-        raise
+    print("📡 running in long-polling mode …")
+    # interval=0 means use Telegram’s recommended ~long-poll timeout
+    app.run_polling(
+        allowed_updates=Update.ALL_TYPES,
+        stop_signals=None,     # don’t fiddle with Railway’s SIGTERM
+    )
