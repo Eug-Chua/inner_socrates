@@ -7,7 +7,7 @@ load_dotenv()
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-philosophers = ["Socrates", "Plato", "Aristotle", "Immanuel Kant", "St. Augustine"]
+philosophers = ["Socrates", "Plato", "Aristotle", "Immanuel Kant", "St. Augustine", "Friedrich Nietzsche"]
 
 themes = [
     "intellectual humility", "contemplation", "Solvitur ambulando", "reflection", "self-awareness",
