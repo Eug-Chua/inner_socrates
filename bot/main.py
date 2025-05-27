@@ -167,15 +167,12 @@ async def main():
 
     await start_health_server()  # this binds to Railway's PORT
 
-    await app.start()
-    await app.updater.start_webhook(
+    await app.run_webhook(
         listen="0.0.0.0",
-        port=8443,  # Telegram webhook listener
+        port=8443,
         webhook_url=WEBHOOK_URL,
+        stop_signals=None,  # prevent it from closing the event loop on SIGTERM
     )
-    
-    print("✅ Both servers started — waiting forever to keep Railway alive.")
-    await asyncio.Event().wait()  # Keeps container alive
 
 
 if __name__ == "__main__":
