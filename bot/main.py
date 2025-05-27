@@ -127,25 +127,31 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Entrypoint
 async def main():
-    app = ApplicationBuilder().token(BOT_TOKEN).build()
+    try:
+        app = ApplicationBuilder().token(BOT_TOKEN).build()
 
-    # Register handlers
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(CallbackQueryHandler(handle_thought, pattern="^thought$"))
-    app.add_handler(CallbackQueryHandler(handle_steps_button, pattern="^steps$"))
-    app.add_handler(CallbackQueryHandler(handle_examine_button, pattern="^examine$"))
-    app.add_handler(CallbackQueryHandler(handle_noise_lens_choice, pattern="^noise_.*$"))
-    app.add_handler(CallbackQueryHandler(handle_examine_lens_choice, pattern="^examine_.*$"))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+        app.add_handler(CommandHandler("start", start))
+        app.add_handler(CallbackQueryHandler(handle_thought, pattern="^thought$"))
+        app.add_handler(CallbackQueryHandler(handle_steps_button, pattern="^steps$"))
+        app.add_handler(CallbackQueryHandler(handle_examine_button, pattern="^examine$"))
+        app.add_handler(CallbackQueryHandler(handle_noise_lens_choice, pattern="^noise_.*$"))
+        app.add_handler(CallbackQueryHandler(handle_examine_lens_choice, pattern="^examine_.*$"))
+        app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-    # Manually initialize + webhook
-    await app.initialize()
-    await app.bot.set_webhook(url=WEBHOOK_URL)
-    print(f"✅ Webhook registered at: {WEBHOOK_URL}")
-    await app.start()
+        await app.initialize()
+        await app.bot.set_webhook(url=WEBHOOK_URL)
+        print(f"✅ Webhook registered at: {WEBHOOK_URL}")
+        await app.start()
 
-    # ✅ Keep it alive forever
-    await asyncio.Event().wait()
+        print("🤖 Bot is running. Waiting forever...")
+        await asyncio.Event().wait()
+
+    except Exception as e:
+        print(f"❌ CRASHED: {e}")
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    import asyncio
+    try:
+        asyncio.run(main())
+    except Exception as e:
+        print(f"❌ FATAL ERROR in asyncio.run(): {e}")
