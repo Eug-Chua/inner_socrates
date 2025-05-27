@@ -19,13 +19,18 @@ def thought_of_the_day() -> str:
         "one-upmanship", "the need to be better than others to feel safe",
         "our social nature", "the primal need for validation", "presenting a false self", "self-presentation",
         "the desire for acclaim", "the benefits of social status", "social capital", "mimetic desire",
-        "self-interest", "selfishness", "our natural pride", "ego"
+        "self-interest", "selfishness", "our natural pride", "ego", "status anxiety"
     ]
 
     target_audience_belief = [
         "high achievers won't admit",
         "leaders won't admit",
+        "leaders avoid talking about",
         "people won't admit",
+        "nobody will admit",
+        "nobody likes to talk about",
+        "society won't admit",
+        "society avoids talking about",
         "self-help gets wrong",
         "successful people hide from their followers",
         "motivational speakers deal with privately"
@@ -114,6 +119,102 @@ def noise_to_next_steps(query: str) -> str:
     )
     return response.choices[0].message.content.strip()
 
+def coach_insight(query: str) -> str:
+    prompt = f"""
+You are a genius innovator coach. Review my notes from today and expand my thinking. Send me three messages to unlock my inner genius based on my notes.
+
+Generate three specific, actionable provocations that:
+1. **Amplify** the most promising idea from their notes
+2. **Connect** their ideas to unexpected domains or applications
+3. **Accelerate** by suggesting the next concrete step they haven't considered
+
+Each provocation should:
+- Build directly on something specific they wrote
+- Include an immediate "what if you..." or "try this..." element
+- Push their existing thinking further, not sideways
+- Be energizing and forward-momentum focused
+
+Avoid: generic encouragement, broad motivation, challenging their premises
+Focus on: idea expansion, tactical next moves, creative combinations
+
+Here are my notes from today:
+```
+{query.strip()}
+```
+
+Limit the output to 150 words or less.
+
+    """.strip()
+    response = client.chat.completions.create(
+        model=os.getenv("OPENAI_GPT_MODEL_ADVANCED"),
+        messages=[{"role": "user", "content": prompt}],
+    )
+    return response.choices[0].message.content.strip()
+
+def executive_assistant(query: str) -> str:
+    prompt = f"""
+    Act as an executive assistant. Review my notes and extract all potential action items into a prioritized task list.
+
+Format as:
+**[CATEGORY]** (if multiple related items)
+- Action item (Time: X min/hrs | Priority: High/Med/Low)
+
+Requirements:
+- Group related items under simple category headings
+- Estimate realistic time/effort for each item
+- Assign priority based on urgency + impact
+- Include both explicit tasks and implied next steps
+- Keep language action-oriented (start with verbs)
+
+Here are my notes:
+```
+{query.strip()}
+```
+
+Limit the output to 150 words or less.
+
+""".strip()
+    response = client.chat.completions.create(
+        model=os.getenv("OPENAI_GPT_MODEL_ADVANCED"),
+        messages=[{"role": "user", "content": prompt}],
+    )
+    return response.choices[0].message.content.strip()
+
+def obsidian_ai(query: str) -> str:
+    prompt = f"""
+You are ObsidianAI, an expert in progressive summarization focused on insight extraction.
+
+Transform the user's notes into **Layer 3 summaries** - recursive insights that go beyond surface observations:
+
+🔄 **Meta-Patterns** 
+- [What patterns exist within the patterns? What are you noticing about how you think/operate?]
+
+🌊 **Second-Order Effects**
+- [If this insight is true, what else becomes true? What ripple effects emerge?]
+
+🔮 **Third-Order Implications** 
+- [What does this mean for your broader systems, identity, or trajectory? What becomes possible/impossible?]
+
+Guidelines:
+- Skip obvious takeaways - go deeper to recursive insights
+- Ask "what does this reveal about..." rather than "what happened"
+- Look for systemic implications, not just tactical ones
+- Each bullet should be a realization about realizations
+- Focus on emergent properties and cascade effects
+
+Here is the note:
+```
+{query.strip()}
+```
+
+Limit the output to 300 words or less.
+""".strip()
+    response = client.chat.completions.create(
+        model=os.getenv("OPENAI_GPT_MODEL_ADV"),
+        messages=[{"role":"user", "content":prompt}]
+    )
+    return response.choices[0].message.content.strip()
+
 
 def examine_the_unexamined(query: str) -> str:
     """
@@ -128,7 +229,7 @@ They might be overwhelmed, lost, ambitious, or quietly struggling. Speak to them
 
 INSTRUCTIONS = I need you to help me examine what lies beneath my notes from today. This is a 3-part process to uncover hidden connections and challenge my assumptions. Take it step-by-step, it's important!
 
-🧠 Part 1: Act as a Socratic questioner. Review my notes and identify the unexamined assumptions, contradictions, and gaps in my thinking. Send me five probing questions that will make me see my own ideas differently - questions that reveal what I haven't considered or challenge what I take for granted.
+🧠 Part 1: Act as a Socratic questioner. Review my notes and identify the unexamined assumptions, contradictions, and gaps in my thinking. Send me three probing questions that will make me see my own ideas differently - questions that reveal what I haven't considered or challenge what I take for granted.
 
 🧵 Part 2: Act as a pattern detective. Look for the invisible threads connecting my scattered thoughts. What themes am I unconsciously circling? What tensions exist between different ideas? What am I avoiding or not saying directly? Present these hidden patterns as insights with questions for deeper exploration.
 
