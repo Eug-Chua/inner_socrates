@@ -1,7 +1,6 @@
 import sys
 import os
 import asyncio
-from aiohttp import web
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -147,8 +146,8 @@ async def main():
 
 
 if __name__ == "__main__":
-    import asyncio
     try:
-        asyncio.run(main())
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(main())
     except Exception as e:
-        print(f"❌ FATAL ERROR in asyncio.run(): {e}")
+        print(f"❌ FATAL ERROR in get_event_loop().run_until_complete(): {e}")
