@@ -3,3 +3,4 @@ python-telegram-bot[webhooks]
 python-dotenv
 dotenv
 nest_asyncio
+aiohttp
