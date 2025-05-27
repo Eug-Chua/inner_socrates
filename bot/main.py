@@ -122,12 +122,18 @@ app.add_handler(CallbackQueryHandler(handle_noise_lens_choice, pattern="^noise_.
 app.add_handler(CallbackQueryHandler(handle_examine_lens_choice, pattern="^examine_.*$"))
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-# ── ENTRYPOINT – **NO** asyncio.run() ───────────────
+# ── ENTRYPOINT ─────────────────────────────────────
 if __name__ == "__main__":
-    app.run_webhook(
-        listen="0.0.0.0",
-        port=PORT,
-        url_path="telegram",
-        webhook_url=WEBHOOK_URL,
-        stop_signals=None,
-    )
+    try:
+        print("🚀 launching run_webhook …")
+        app.run_webhook(
+            listen="0.0.0.0",
+            port = PORT,
+            url_path="telegram",
+            webhook_url = WEBHOOK_URL,
+            stop_signals=None,
+        )
+    except Exception as err:
+        # ← any traceback will now appear in Railway logs
+        print("❌ FATAL:", err)
+        raise
