@@ -1,6 +1,7 @@
 import os
 import sys
 import asyncio
+import aiohttp
 from aiohttp import web
 import nest_asyncio
 
@@ -47,6 +48,15 @@ async def start_health_server():
     site = web.TCPSite(runner, "0.0.0.0", port)
     await site.start()
     print(f"🌐 Healthcheck server started on port {port} (/).")
+
+    # 👇 Force-ping the health endpoint after starting
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"http://localhost:{port}/") as resp:
+                print(f"👋 Internal health ping: {resp.status}")
+    except Exception as e:
+        print(f"⚠️ Failed to self-ping: {e}")
+
 
 # Telegram handlers
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
