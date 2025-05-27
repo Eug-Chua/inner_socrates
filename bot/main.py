@@ -150,6 +150,9 @@ async def main():
             webhook_url=WEBHOOK_URL
         )
 
+        # 👇 This keeps the container alive!
+        await asyncio.Event().wait()
+
     except Exception as e:
         print(f"❌ CRASHED: {e}")
 
