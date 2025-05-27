@@ -1,5 +1,5 @@
 openai
-python-telegram-bot==20.6
+python-telegram-bot[webhooks]
 python-dotenv
 dotenv
 aiohttp
