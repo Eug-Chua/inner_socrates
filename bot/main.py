@@ -128,27 +128,36 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Entrypoint
 async def main():
-    app = ApplicationBuilder().token(BOT_TOKEN).build()
+    try:
+        app = ApplicationBuilder().token(BOT_TOKEN).build()
 
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(CallbackQueryHandler(handle_thought, pattern="^thought$"))
-    app.add_handler(CallbackQueryHandler(handle_steps_button, pattern="^steps$"))
-    app.add_handler(CallbackQueryHandler(handle_examine_button, pattern="^examine$"))
-    app.add_handler(CallbackQueryHandler(handle_noise_lens_choice, pattern="^noise_.*$"))
-    app.add_handler(CallbackQueryHandler(handle_examine_lens_choice, pattern="^examine_.*$"))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+        app.add_handler(CommandHandler("start", start))
+        app.add_handler(CallbackQueryHandler(handle_thought, pattern="^thought$"))
+        app.add_handler(CallbackQueryHandler(handle_steps_button, pattern="^steps$"))
+        app.add_handler(CallbackQueryHandler(handle_examine_button, pattern="^examine$"))
+        app.add_handler(CallbackQueryHandler(handle_noise_lens_choice, pattern="^noise_.*$"))
+        app.add_handler(CallbackQueryHandler(handle_examine_lens_choice, pattern="^examine_.*$"))
+        app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-    print("🚀 Starting with run_webhook()")
-    await app.run_webhook(
-        listen="0.0.0.0",
-        port=int(os.environ.get("PORT", 8080)),
-        webhook_url=WEBHOOK_URL
-    )
+        await app.initialize()
+        await app.bot.set_webhook(url=WEBHOOK_URL)
+        print(f"✅ Webhook registered at: {WEBHOOK_URL}")
+
+        await app.start()
+        await app.updater.start_webhook(
+            listen="0.0.0.0",
+            port=int(os.environ.get("PORT", 8080)),
+            webhook_url=WEBHOOK_URL
+        )
+
+        print("🤖 Bot is running and awaiting requests...")
+        await asyncio.Event().wait()
+
+    except Exception as e:
+        print(f"❌ CRASHED: {e}")
+
 
 
 if __name__ == "__main__":
-    try:
-        nest_asyncio.apply()
-        asyncio.run(main())
-    except Exception as e:
-        print(f"❌ FATAL ERROR in asyncio.run(): {e}")
+    nest_asyncio.apply()
+    asyncio.run(main())
