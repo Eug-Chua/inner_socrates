@@ -1,6 +1,7 @@
 import sys
 import os
 import asyncio
+from aiohttp import web
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -126,6 +127,19 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("🧭 Try /start and choose a reflection path.")
 
 # Entrypoint
+async def healthcheck(request):
+    return web.Response(text="✅ InnerSocrates bot is alive.")
+
+async def keep_http_alive():
+    port = int(os.environ.get("PORT", 8555))
+    app = web.Application()
+    app.add_routes([web.get("/", healthcheck)])
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, "0.0.0.0", port)
+    await site.start()
+    print(f"🌐 Dummy HTTP server started on port {port} for Railway")
+
 async def main():
     try:
         app = ApplicationBuilder().token(BOT_TOKEN).build()
@@ -142,6 +156,9 @@ async def main():
         await app.bot.set_webhook(url=WEBHOOK_URL)
         print(f"✅ Webhook registered at: {WEBHOOK_URL}")
         await app.start()
+
+        # 🧠 Start dummy HTTP server to satisfy Railway's port check
+        await keep_http_alive()
 
         print("🤖 Bot is running. Waiting forever...")
         await asyncio.Event().wait()
