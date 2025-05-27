@@ -90,7 +90,7 @@ async def handle_examine_lens_choice(update: Update, context: ContextTypes.DEFAU
         result = socratic_questioner(query)
     elif callback == "examine_pattern":
         result = pattern_detective(query)
-    elif callback == "noise_obsidian":
+    elif callback == "examine_obsidian":
         result = obsidian_ai(query)
     else:
         result = "⚠️ Something went wrong. Please try again."
@@ -117,7 +117,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         keyboard = [
             [InlineKeyboardButton("❓ Socratic Questioner", callback_data="examine_socratic")],
             [InlineKeyboardButton("🧠 Pattern Detective", callback_data="examine_pattern")],
-            [InlineKeyboardButton("📓 ObsidianAI", callback_data="noise_obsidian")],
+            [InlineKeyboardButton("📓 ObsidianAI", callback_data="examine_obsidian")],
         ]
         await update.message.reply_text("Choose your lens of inquiry:", reply_markup=InlineKeyboardMarkup(keyboard))
         return
@@ -133,6 +133,9 @@ async def main():
     app.add_handler(CallbackQueryHandler(handle_thought, pattern="^thought$"))
     app.add_handler(CallbackQueryHandler(handle_steps_button, pattern="^steps$"))
     app.add_handler(CallbackQueryHandler(handle_examine_button, pattern="^examine$"))
+    app.add_handler(CallbackQueryHandler(handle_noise_lens_choice, pattern="^noise_.*$"))
+    app.add_handler(CallbackQueryHandler(handle_examine_lens_choice, pattern="^examine_.*$"))
+
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
     # Set webhook
