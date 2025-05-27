@@ -157,11 +157,11 @@ async def main():
         print(f"✅ Webhook registered at: {WEBHOOK_URL}")
         await app.start()
 
-        # 🧠 Start dummy HTTP server to satisfy Railway's port check
-        await keep_http_alive()
-
-        print("🤖 Bot is running. Waiting forever...")
-        await asyncio.Event().wait()
+        # Run bot and HTTP server concurrently
+        await asyncio.gather(
+            keep_http_alive(),  # Keeps port open for Railway
+            asyncio.Event().wait()  # Keeps process alive forever
+        )
 
     except Exception as e:
         print(f"❌ CRASHED: {e}")
