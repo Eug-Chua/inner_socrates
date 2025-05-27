@@ -2,4 +2,3 @@ openai
 python-telegram-bot[webhooks]
 python-dotenv
 dotenv
-aiohttp
