@@ -138,16 +138,17 @@ async def main():
     app.add_handler(CallbackQueryHandler(handle_examine_lens_choice, pattern="^examine_.*$"))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-    # Start application (low-level control)
+    # Manual webhook setup
     await app.initialize()
     await app.bot.set_webhook(url=WEBHOOK_URL)
     await app.start()
-    await app.updater.start_polling()  # <- use polling instead of webhook temporarily
 
-    print("✅ Bot started and webhook set.")
-
-    # Wait forever to keep the process alive
-    await asyncio.Event().wait()
+    # Start webhook server using Application's built-in webhook listener
+    await app.run_webhook(
+        listen="0.0.0.0",
+        port=int(os.environ.get("PORT", 8555)),
+        webhook_url=WEBHOOK_URL
+    )
 
 
 if __name__ == "__main__":
