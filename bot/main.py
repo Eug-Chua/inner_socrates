@@ -1,41 +1,19 @@
-import os
-import sys
-import asyncio
-import aiohttp
-from aiohttp import web
-import nest_asyncio
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
+import os, sys
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
-    ApplicationBuilder,
-    CommandHandler,
-    MessageHandler,
-    CallbackQueryHandler,
-    ContextTypes,
-    filters,
+    ApplicationBuilder, CommandHandler, CallbackQueryHandler,
+    MessageHandler, ContextTypes, filters,
 )
 from dotenv import load_dotenv
-from src.prompts import (
-    thought_of_the_day,
-    coach_insight,
-    executive_assistant,
-    obsidian_ai,
-    socratic_questioner,
-    pattern_detective,
-)
 
+# ── ENV ─────────────────────────────────────────────
 load_dotenv()
+BOT_TOKEN   = os.environ["TELEGRAM_TOKEN"]
+PUBLIC_URL  = os.environ["WEBHOOK_URL"]            
+PORT        = int(os.environ.get("PORT", "8080"))  
+WEBHOOK_URL = f"{PUBLIC_URL}/telegram"  
 
-# ─── env ────────────────────────────────────────────
-load_dotenv()
-BOT_TOKEN   = os.getenv("TELEGRAM_TOKEN")
-PUBLIC_URL  = os.getenv("WEBHOOK_URL")             # e.g. https://xxx.up.railway.app
-PORT        = int(os.getenv("PORT", 8080))         # Railway injects the real value
-WEBHOOK_URL = f"{PUBLIC_URL}/telegram"             # any path is fine
-
-# ─── your handlers (exactly as before) ─────────────
+# ── STATE ───────────────────────────────────────────
 pending_noise_input, pending_examine_input = {}, {}
 
 # Telegram handlers
@@ -127,12 +105,13 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text("🧭 Try /start and choose a reflection path.")
 
-# ─── build Application ─────────────────────────────
+# ── BUILD APPLICATION ──────────────────────────────
 app = (
     ApplicationBuilder()
     .token(BOT_TOKEN)
     .build()
 )
+
 async def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
@@ -144,13 +123,15 @@ async def main():
     app.add_handler(CallbackQueryHandler(handle_examine_lens_choice, pattern="^examine_.*$"))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-# ─── single entrypoint ─────────────────────────────
-async def main() -> None:
-    await app.run_webhook(
-        listen      = "0.0.0.0",
-        port        = PORT,          # <-- Railway port
-        webhook_url = WEBHOOK_URL,
-    )
-
+# ── ENTRYPOINT – **NO** asyncio.run() ───────────────
 if __name__ == "__main__":
-    asyncio.run(main())
+    # run_webhook blocks; it sets up an aiohttp server that
+    #   * binds 0.0.0.0:$PORT
+    #   * responds 200 OK on GET /
+    #   * processes Telegram POSTs at /telegram
+    app.run_webhook(
+        listen="0.0.0.0",
+        port=PORT,            # Railway health-check port
+        webhook_url=WEBHOOK_URL,
+        stop_signals=None,    # don’t touch the global loop
+    )
