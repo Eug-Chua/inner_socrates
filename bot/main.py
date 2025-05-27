@@ -1,6 +1,7 @@
 import sys
 import os
 import asyncio
+import nest_asyncio
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -147,7 +148,7 @@ async def main():
 
 if __name__ == "__main__":
     try:
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(main())
+        nest_asyncio.apply()
+        asyncio.run(main())
     except Exception as e:
-        print(f"❌ FATAL ERROR in get_event_loop().run_until_complete(): {e}")
+        print(f"❌ FATAL ERROR in asyncio.run(): {e}")
