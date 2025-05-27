@@ -1,6 +1,7 @@
 import sys
 import os
 import asyncio
+from aiohttp import web
 import nest_asyncio
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -127,6 +128,18 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("🧭 Try /start and choose a reflection path.")
 
 # Entrypoint
+async def healthcheck(request):
+    return web.Response(text="✅ InnerSocrates bot is alive.")
+
+async def start_health_server():
+    app = web.Application()
+    app.router.add_get("/", healthcheck)
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, "0.0.0.0", int(os.environ.get("PORT", 8080)))
+    await site.start()
+    print("🌐 Healthcheck server started on /")
+
 async def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
@@ -138,12 +151,23 @@ async def main():
     app.add_handler(CallbackQueryHandler(handle_examine_lens_choice, pattern="^examine_.*$"))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-    print("🚀 Using run_webhook() to bind port and keep container alive...")
-    await app.run_webhook(
+    await app.initialize()
+    await app.bot.set_webhook(url=WEBHOOK_URL)
+
+    print("✅ Webhook registered.")
+    print("🚀 Starting healthcheck server AND Telegram webhook...")
+
+    await start_health_server()  # this binds to Railway's $PORT
+    await app.start()
+
+    # This binds to a random internal port and handles Telegram webhook
+    await app.updater.start_webhook(
         listen="0.0.0.0",
-        port=int(os.environ.get("PORT", 8080)),
+        port=8443,  # not the Railway port
         webhook_url=WEBHOOK_URL
     )
+
+    await asyncio.Event().wait()
 
 if __name__ == "__main__":
     import nest_asyncio
