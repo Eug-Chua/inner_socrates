@@ -141,6 +141,9 @@ async def main():
     # Manual webhook setup
     await app.initialize()
     await app.bot.set_webhook(url=WEBHOOK_URL)
+    info = await app.bot.get_webhook_info()
+    print(f"✅ Webhook registered at: {info.url}")
+
     await app.start()
 
     # Start webhook server using Application's built-in webhook listener
