@@ -128,17 +128,11 @@ app.add_handler(CallbackQueryHandler(handle_noise_lens_choice, pattern="^noise_.
 app.add_handler(CallbackQueryHandler(handle_examine_lens_choice, pattern="^examine_.*$"))
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-# add just before run_polling()
-async def main():
-    # delete webhook first – this also drops any pending updates
-    await app.bot.delete_webhook(drop_pending_updates=True)
-    print("✅ Webhook deleted; switching to long-polling")
-
-    await app.run_polling(
-        allowed_updates=Update.ALL_TYPES,
-        stop_signals=None,
-    )
-
+# ── ENTRYPOINT ─────────────────────────────────────
 if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
+    print("📡 running in long-polling mode …")
+    app.run_polling(
+        allowed_updates = Update.ALL_TYPES,
+        drop_pending_updates = True,   # clears any old webhook / poller
+        stop_signals = None,           # don’t touch Railway’s loop
+    )
