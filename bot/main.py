@@ -127,20 +127,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("🧭 Try /start and choose a reflection path.")
 
 # Entrypoint
-
-async def healthcheck(request):
-    return web.Response(text="✅ InnerSocrates bot is alive.")
-
-async def keep_http_alive():
-    port = int(os.environ.get("PORT", 8080))
-    app = web.Application()
-    app.add_routes([web.get("/", healthcheck)])
-    runner = web.AppRunner(app)
-    await runner.setup()
-    site = web.TCPSite(runner, "0.0.0.0", port)
-    await site.start()
-    print(f"🌐 Dummy HTTP server started on port {port} for Railway")
-
 async def main():
     try:
         app = ApplicationBuilder().token(BOT_TOKEN).build()
