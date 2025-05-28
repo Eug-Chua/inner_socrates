@@ -16,7 +16,7 @@ themes = [
     "our social nature", "the primal need for validation", "presenting a false self", "self-presentation",
     "the desire for acclaim", "the benefits of social status", "social capital", "mimetic desire",
     "self-interest", "selfishness", "our natural pride", "ego", "status anxiety",
-    "feeling less than others", "feeling better than others"
+    "feeling less than others", "feeling better than others", "self-leadership", "self-mastery"
     ]
 
 target_audience_belief = [
@@ -108,7 +108,7 @@ Act as a motivational coach. Review my notes from today and expand my thinking. 
 Generate three specific, actionable provocations that:
 1. **Amplify** the most promising idea from their notes
 2. **Connect** their ideas to self-mastery
-3. **Accelerate** by suggesting the next concrete step in their personal lives they haven't considered
+3. **Accelerate** by suggesting the next concrete step they haven't considered in honing self-leadership
 
 Each provocation should:
 - Be specifc
@@ -146,6 +146,7 @@ Requirements:
 - Group related items under simple category headings
 - Include both explicit tasks and second-order next steps
 - Keep language action-oriented (start with verbs)
+- Instill self-belief and self-leadership
 
 Follow this stylistic framework:
 {stylistic_framework}
@@ -185,6 +186,7 @@ Guidelines:
 - Look for systemic implications, not just tactical ones
 - Each bullet should be a realization about realizations
 - Focus on emergent properties and cascade effects
+- Instill self-belief and self-leadership
 - Use bullet points
 
 Follow this stylistic framework:
