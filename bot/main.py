@@ -74,7 +74,7 @@ async def handle_examine_button(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     pending_examine_input[user_id] = True
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
-        "🧐 Share what's on your mind. Let's deepen them.",
+        "🧐 Share what's on your mind. Let's deepen it.",
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton("↩️ Back", callback_data="back_to_menu")]]
         ),
@@ -132,7 +132,7 @@ async def end_cmd(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     pending_examine_input.pop(user_id, None)
     ctx.user_data.clear()
     await update.message.reply_text(
-        "✅ Conversation ended. Send /start whenever you’d like to begin again."
+        "✅ Convo ended. Type /start whenever you’d like to begin again."
     )
 
 # ── BUILD APPLICATION ──────────────────────────────
