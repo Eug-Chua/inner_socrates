@@ -36,8 +36,7 @@ target_audience_belief = [
 stylistic_framework = f"""
 - Embrace rhythmic cadence and internal rhyme where appropriate.
 - Favor structures that sound poetic but grounded.
-- Use long sentences to build narrative or philosophical momentum.
-- Interrupt with short, punchy sentences for emphasis.
+- Mix **short, sharp sentences** for impact With **long, reflective ones** to unravel complexity.  
 - Vary rhythm for tension and release. Build, pause, then strike.
 - Avoid: generic encouragement, broad motivation, challenging their premises
 - Focus on: idea expansion and tactical next moves
