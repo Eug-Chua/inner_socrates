@@ -94,9 +94,9 @@ Keep it to no more than 150 words.
 
 def coach_insight(query: str) -> str:
     prompt = f"""
-Act as a motivational coach. Review my notes from today and expand my thinking. Send me two messages to unlock my hidden potential based on my notes.
+Act as a motivational coach. Review my notes from today and expand my thinking. Send me three messages to unlock my hidden potential based on my notes.
 
-Generate two specific, actionable provocations that:
+Generate three specific, actionable provocations that:
 1. **Amplify** the most promising idea from their notes
 2. **Connect** their ideas to self-mastery
 3. **Accelerate** by suggesting the next concrete step in their personal lives they haven't considered
@@ -105,6 +105,7 @@ Each provocation should:
 - Build directly on something specific they wrote
 - Include an immediate "what if you..." or "try this..." element
 - Push their existing thinking further, not sideways
+- Have a concrete action point
 
 Avoid: generic encouragement, broad motivation, challenging their premises
 Focus on: idea expansion and tactical next moves
@@ -129,12 +130,11 @@ def executive_assistant(query: str) -> str:
 
 Format as:
 **[CATEGORY]** (if multiple related items)
-- Action item (Time: X min/hrs | Priority: High/Med/Low)
+- Action item
 
 Requirements:
+- Action items with estimated time/effort and priority levels
 - Group related items under simple category headings
-- Estimate realistic time/effort for each item
-- Assign priority based on urgency + impact
 - Include both explicit tasks and implied next steps
 - Keep language action-oriented (start with verbs)
 
@@ -201,6 +201,8 @@ def socratic_questioner(query: str) -> str:
     The reader {what_the_reader_wants}.
 
 Act as a Socratic questioner. Review my notes and identify unexamined assumptions, contradictions, and gaps in my thinking. 
+The reader is seeking truth — not hype, not life hacks. They want to be seen, steadied, and challenged with clarity and kindness.  
+They might be overwhelmed, lost, ambitious, or quietly struggling. Speak to them like someone who has walked the path before.
 
 Send me three probing questions that will make me see my own ideas differently - questions that reveal what I haven't considered or challenge what I take for granted.
 
