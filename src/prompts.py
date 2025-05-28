@@ -180,7 +180,7 @@ Here is the note:
 {query.strip()}
 ```
 
-Limit the output to 300 words or less.
+Limit the output to 250 words or less.
 """.strip()
     response = client.chat.completions.create(
         model=os.getenv("OPENAI_GPT_MODEL_ADVANCED"),
