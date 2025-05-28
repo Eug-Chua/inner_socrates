@@ -125,9 +125,20 @@ async def handle_message(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text("🧭 Try /start and choose a reflection path.")
 
+async def end_cmd(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+    # clear any pending multi-step states
+    pending_noise_input.pop(user_id, None)
+    pending_examine_input.pop(user_id, None)
+    ctx.user_data.clear()
+    await update.message.reply_text(
+        "✅ Conversation ended. Send /start whenever you’d like to begin again."
+    )
+
 # ── BUILD APPLICATION ──────────────────────────────
 app = ApplicationBuilder().token(BOT_TOKEN).build()
 app.add_handler(CommandHandler("start", start))
+app.add_handler(CommandHandler("end", end_cmd))
 app.add_handler(CallbackQueryHandler(handle_thought,           pattern="^thought$"))
 app.add_handler(CallbackQueryHandler(handle_steps_button,      pattern="^steps$"))
 app.add_handler(CallbackQueryHandler(handle_examine_button,    pattern="^examine$"))
