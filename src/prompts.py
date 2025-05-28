@@ -183,7 +183,7 @@ Here is the note:
 Limit the output to 300 words or less.
 """.strip()
     response = client.chat.completions.create(
-        model=os.getenv("OPENAI_GPT_MODEL_ADV"),
+        model=os.getenv("OPENAI_GPT_MODEL_ADVANCED"),
         messages=[{"role":"user", "content":prompt}]
     )
     return response.choices[0].message.content.strip()
@@ -217,7 +217,7 @@ Limit the output to 200 words or less.
 """.strip()
     
     response = client.chat.completions.create(
-        model=os.getenv("OPENAI_GPT_MODEL_ADV"),
+        model=os.getenv("OPENAI_GPT_MODEL_ADVANCED"),
         messages=[{"role":"user", "content":prompt}]
     )
     return response.choices[0].message.content.strip()
