@@ -102,7 +102,7 @@ Generate three specific, actionable provocations that:
 3. **Accelerate** by suggesting the next concrete step in their personal lives they haven't considered
 
 Each provocation should:
-- Build directly on something specific they wrote
+- Be specifc
 - Include an immediate "what if you..." or "try this..." element
 - Push their existing thinking further, not sideways
 - Have a concrete action point
@@ -129,13 +129,13 @@ def executive_assistant(query: str) -> str:
     Act as an executive assistant. Review my notes and extract all potential action items into a prioritized task list.
 
 Format as:
-**[CATEGORY]** (if multiple related items)
+[CATEGORY] (if multiple related items)
 - Action item
 
 Requirements:
 - Action items with estimated time/effort and priority levels
 - Group related items under simple category headings
-- Include both explicit tasks and implied next steps
+- Include both explicit tasks and second-order next steps
 - Keep language action-oriented (start with verbs)
 
 Here are my notes:
@@ -173,6 +173,7 @@ Guidelines:
 - Look for systemic implications, not just tactical ones
 - Each bullet should be a realization about realizations
 - Focus on emergent properties and cascade effects
+- Use bullet points
 
 Here is the note:
 ```
