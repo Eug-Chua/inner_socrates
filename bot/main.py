@@ -35,7 +35,8 @@ async def show_menu(update: Update, ctx: ContextTypes.DEFAULT_TYPE, *, edit=Fals
 
 # ── HANDLERS ───────────────────────────────────────
 async def start(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
-    await show_menu(update, ctx)          # initial menu
+    ctx.user_data["stage"] = "main"
+    await show_menu(update, ctx)
 
 async def handle_thought(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     await update.callback_query.answer()
@@ -47,6 +48,7 @@ async def handle_thought(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 async def handle_steps_button(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     pending_noise_input[user_id] = True
+    ctx.user_data['stage'] = 'noise_prompt'
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
         "💡 Drop your thoughts here. I’ll help you turn your noise into next steps.",
@@ -68,10 +70,13 @@ async def handle_noise_lens_choice(update: Update, ctx: ContextTypes.DEFAULT_TYP
     )
     await update.callback_query.edit_message_text(result, parse_mode="HTML",
         reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("↩️ Back", callback_data="back_to_menu")]]))
+    
+    ctx.user_data["stage"] = "noise_lenses"
 
 async def handle_examine_button(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     pending_examine_input[user_id] = True
+    ctx.user_data['stage'] = 'examine_prompt'
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
         "🧐 Share what's on your mind. Let's deepen it.",
@@ -93,9 +98,49 @@ async def handle_examine_lens_choice(update: Update, ctx: ContextTypes.DEFAULT_T
     )
     await update.callback_query.edit_message_text(result, parse_mode="HTML",
         reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("↩️ Back", callback_data="back_to_menu")]]))
+    
+    ctx.user_data["stage"] = "examine_lenses"
 
 async def back_to_menu(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
-    await show_menu(update, ctx, edit=True)
+    stage = ctx.user_data.get("stage")
+
+    if stage == "noise_prompt":
+        await show_menu(update, ctx, edit=True)
+
+    elif stage == "noise_lenses":
+        # rebuild the same kb used earlier
+        kb_noise = InlineKeyboardMarkup([
+            [InlineKeyboardButton("🧠 Genius Coach",       callback_data="noise_coach")],
+            [InlineKeyboardButton("🗂 Executive Assistant", callback_data="noise_exec")],
+            [InlineKeyboardButton("📓 ObsidianAI",          callback_data="noise_obsidian")],
+            [InlineKeyboardButton("↩️ Back",               callback_data="back_to_menu")],
+        ])
+        await update.callback_query.edit_message_text(
+            "Choose how to process your thoughts:", reply_markup=kb_noise
+        )
+        # move back one step
+        ctx.user_data["stage"] = "noise_prompt"
+
+    elif stage == "examine_prompt":
+        await show_menu(update, ctx, edit=True)
+
+    elif stage == "examine_lenses":
+        kb_ex = InlineKeyboardMarkup([
+            [InlineKeyboardButton("⚡️ Socratic Questioner", callback_data="examine_socratic")],
+            [InlineKeyboardButton("🫆 Pattern Detective",   callback_data="examine_pattern")],
+            [InlineKeyboardButton("📓 ObsidianAI",          callback_data="examine_obsidian")],
+            [InlineKeyboardButton("↩️ Back",               callback_data="back_to_menu")],
+        ])
+        await update.callback_query.edit_message_text(
+            "Choose your lens of inquiry:", reply_markup=kb_ex
+        )
+        ctx.user_data["stage"] = "examine_prompt"
+
+    else:
+        # default: main menu
+        await show_menu(update, ctx, edit=True)
+        ctx.user_data["stage"] = "main"
+
 
 async def handle_message(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
@@ -103,6 +148,7 @@ async def handle_message(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 
     if pending_noise_input.pop(user_id, False):
         ctx.user_data["noise_text"] = text
+        ctx.user_data['stage'] = 'noise_lenses'
         kb_noise = InlineKeyboardMarkup([
             [InlineKeyboardButton("🧠 Genius Coach",       callback_data="noise_coach")],
             [InlineKeyboardButton("🗂 Executive Assistant", callback_data="noise_exec")],
@@ -114,9 +160,10 @@ async def handle_message(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 
     if pending_examine_input.pop(user_id, False):
         ctx.user_data["examine_text"] = text
+        ctx.user_data['stage'] = 'examine_lenses'
         kb_ex = InlineKeyboardMarkup([
-            [InlineKeyboardButton("❓ Socratic Questioner", callback_data="examine_socratic")],
-            [InlineKeyboardButton("🧠 Pattern Detective",   callback_data="examine_pattern")],
+            [InlineKeyboardButton("⚡️ Socratic Questioner", callback_data="examine_socratic")],
+            [InlineKeyboardButton("🫆 Pattern Detective",   callback_data="examine_pattern")],
             [InlineKeyboardButton("📓 ObsidianAI",          callback_data="examine_obsidian")],
             [InlineKeyboardButton("↩️ Back",               callback_data="back_to_menu")],
         ])
