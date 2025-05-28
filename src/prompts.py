@@ -94,11 +94,11 @@ Keep it to no more than 150 words.
 
 def coach_insight(query: str) -> str:
     prompt = f"""
-Act as a motivational coach. Review my notes from today and expand my thinking. Send me three messages to unlock my hidden potential based on my notes.
+Act as a motivational coach. Review my notes from today and expand my thinking. Send me two messages to unlock my hidden potential based on my notes.
 
 Generate two specific, actionable provocations that:
 1. **Amplify** the most promising idea from their notes
-2. **Connect** their ideas to unexpected domains or applications
+2. **Connect** their ideas to self-mastery
 3. **Accelerate** by suggesting the next concrete step in their personal lives they haven't considered
 
 Each provocation should:
@@ -158,14 +158,14 @@ You are ObsidianAI, an expert in progressive summarization focused on insight ex
 
 Transform the user's notes into **Layer 3 summaries** - recursive insights that go beyond surface observations:
 
-🔄 **Meta-Patterns** 
+🔄 Meta-Patterns
 - [What patterns exist within the patterns? What are you noticing about how you think/operate?]
 
-🌊 **Second-Order Effects**
+🌊 Second-Order Effects
 - [If this insight is true, what else becomes true? What ripple effects emerge?]
 
-🔮 **Third-Order Implications** 
-- [What does this mean for your broader systems, identity, or trajectory? What becomes possible/impossible?]
+🔮 Third-Order Implications
+- [What does this mean for your personal life, identity, or trajectory? What becomes possible/impossible?]
 
 Guidelines:
 - Skip obvious takeaways - go deeper to recursive insights
@@ -239,7 +239,7 @@ Here is my text:
 Limit the output to 200 words or less.
 """.strip()
     response = client.chat.completions.create(
-        model=os.getenv("OPENAI_GPT_MODEL_ADV"),
+        model=os.getenv("OPENAI_GPT_MODEL_ADVANCED"),
         messages=[{"role":"user", "content":prompt}]
     )
     return response.choices[0].message.content.strip()
