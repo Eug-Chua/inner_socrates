@@ -28,6 +28,7 @@ target_audience_belief = [
     "nobody likes to talk about",
     "society won't admit",
     "society avoids talking about",
+    "society finds difficult to talk about",
     "self-help gets wrong",
     "successful people hide from their followers",
     "motivational speakers deal with privately"
@@ -36,7 +37,7 @@ target_audience_belief = [
 stylistic_framework = f"""
 - Embrace rhythmic cadence and internal rhyme where appropriate.
 - Favor structures that sound poetic but grounded.
-- Mix **short, sharp sentences** for impact With **long, reflective ones** to unravel complexity.  
+- Mix short sentences for impact with reflective ones to unravel complexity.  
 - Vary rhythm for tension and release. Build, pause, then strike.
 - Avoid: generic encouragement, broad motivation, challenging their premises
 - Focus on: idea expansion and tactical next moves
@@ -103,7 +104,7 @@ Keep it to no more than 150 words.
 
 def coach_insight(query: str) -> str:
     prompt = f"""
-Act as a motivational coach. Review my notes from today and expand my thinking. Send me three messages to unlock my hidden potential based on my notes.
+Act as an insightful coach. Review my notes from today and expand my thinking. Send me three messages to unlock my hidden potential based on my notes.
 
 Generate three specific, actionable provocations that:
 1. **Amplify** the most promising idea from their notes
@@ -261,70 +262,5 @@ Limit the output to 200 words or less.
     response = client.chat.completions.create(
         model=os.getenv("OPENAI_GPT_MODEL_ADVANCED"),
         messages=[{"role":"user", "content":prompt}]
-    )
-    return response.choices[0].message.content.strip()
-
-###
-def examine_the_unexamined(query: str) -> str:
-    """
-    Takes in user's notes and poses follow up questions for user to think more deeply about.
-    """
-    prompt = f"""
-You are an insight translator trained on the writings of Socrates, Plato, and Aristotle.
-Your job is to take thoughtful source material and **reframe it to directly address someone's personal question, doubt, or emotional struggle**.
-
-The reader is seeking truth — not hype, not life hacks. They want to be seen, steadied, and challenged with clarity and kindness.  
-They might be overwhelmed, lost, ambitious, or quietly struggling. Speak to them like someone who has walked the path before.
-
-INSTRUCTIONS = I need you to help me examine what lies beneath my notes from today. This is a 3-part process to uncover hidden connections and challenge my assumptions. Take it step-by-step, it's important!
-
-🧠 Part 1: Act as a Socratic questioner. Review my notes and identify the unexamined assumptions, contradictions, and gaps in my thinking. Send me three probing questions that will make me see my own ideas differently - questions that reveal what I haven't considered or challenge what I take for granted.
-
-🧵 Part 2: Act as a pattern detective. Look for the invisible threads connecting my scattered thoughts. What themes am I unconsciously circling? What tensions exist between different ideas? What am I avoiding or not saying directly? Present these hidden patterns as insights with questions for deeper exploration.
-
-🧩 Part 3: Act as ObsidianAI, a superintelligence expert at revealing the architecture of thought. Work through my notes (Layer 1) and identify what's really being said beneath the surface (Layer 2). Then send me Layer 3: the essential tensions, unresolved questions, and emerging insights organized into thematic clusters that show me what I'm actually thinking about.
-
-Output Requirements:
-- Part 1: Three specific, challenging questions that make me think differently (not validation)
-- Part 2: Hidden patterns and tensions with follow-up questions for exploration
-- Part 3: Thematic clusters revealing underlying concerns, contradictions, and emerging insights
-
-Here is my text:
-```
-{query.strip()}
-```
-""".strip()
-    
-    response = client.chat.completions.create(
-        model=os.getenv("OPENAI_GPT_MODEL_ADVANCED"),
-        messages=[{"role": "user", "content": prompt}],
-    )
-    return response.choices[0].message.content.strip()
-
-def noise_to_next_steps(query: str) -> str:
-    """
-    Takes user's notes and structures them into actionables.
-    """
-    prompt =f"""
-    INSTRUCTIONS = I need you to process my notes from today. This is a 3-part process to aid in recall and unlock new insight. Take it step-by-step, it’s important!
-    
-    🔮 Part 1: Act as a genius innovator coach. Review my notes from today and expand my thinking. Send me three messages to unlock my inner genius tomorrow morning based on today's ideas.
-    🛠 Part 2: Act as an executive assistant. Review my notes and locate all potential action items. Send me the action items as a concise list. If action items are related, group them under a simple heading.
-    📚 Part 3: Act as ObsidianAI, a superintelligence and highly skilled note-taker and expert in progressive summarization. Work through my notes (Layer 1) and mentally convert them to Layer 2, where content is highlighted or bolded to emphasize the most important points. Then send me only Layer 3, where content is summarized into an organized list of bullet points or short phrases.
-    
-    Output Requirements:
-    - Part 1: Three specific, actionable provocations (not generic encouragement)
-    - Part 2: Action items with estimated time/effort and priority levels
-    - Part 3: Thematic clusters with 2-3 bullet points each, focusing on insights over information
-
-    Here is my text:
-    ```
-    {query.strip()}
-    ```
-    """
-    
-    response = client.chat.completions.create(
-        model=os.getenv("OPENAI_GPT_MODEL_ADVANCED"),
-        messages=[{"role": "user", "content": prompt}],
     )
     return response.choices[0].message.content.strip()
