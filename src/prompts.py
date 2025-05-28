@@ -33,6 +33,16 @@ target_audience_belief = [
     "motivational speakers deal with privately"
     ]
 
+stylistic_framework = f"""
+- Embrace rhythmic cadence and internal rhyme where appropriate.
+- Favor structures that sound poetic but grounded.
+- Use long sentences to build narrative or philosophical momentum.
+- Interrupt with short, punchy sentences for emphasis.
+- Vary rhythm for tension and release. Build, pause, then strike.
+- Avoid: generic encouragement, broad motivation, challenging their premises
+- Focus on: idea expansion and tactical next moves
+"""
+
 def thought_of_the_day() -> str:
     """
     Dispenses thought of the day based on randomly selected philosopher and topic.
@@ -107,8 +117,8 @@ Each provocation should:
 - Push their existing thinking further, not sideways
 - Have a concrete action point
 
-Avoid: generic encouragement, broad motivation, challenging their premises
-Focus on: idea expansion and tactical next moves
+Follow this stylistic framework:
+{stylistic_framework}
 
 Here are my notes from today:
 ```
@@ -137,6 +147,9 @@ Requirements:
 - Group related items under simple category headings
 - Include both explicit tasks and second-order next steps
 - Keep language action-oriented (start with verbs)
+
+Follow this stylistic framework:
+{stylistic_framework}
 
 Here are my notes:
 ```
@@ -174,6 +187,9 @@ Guidelines:
 - Each bullet should be a realization about realizations
 - Focus on emergent properties and cascade effects
 - Use bullet points
+
+Follow this stylistic framework:
+{stylistic_framework}
 
 Here is the note:
 ```
