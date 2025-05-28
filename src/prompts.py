@@ -94,12 +94,12 @@ Keep it to no more than 150 words.
 
 def coach_insight(query: str) -> str:
     prompt = f"""
-Act as a genius coach. Review my notes from today and expand my thinking. Send me three messages to unlock my hidden potential based on my notes.
+Act as a motivational coach. Review my notes from today and expand my thinking. Send me three messages to unlock my hidden potential based on my notes.
 
-Generate three specific, actionable provocations that:
+Generate two specific, actionable provocations that:
 1. **Amplify** the most promising idea from their notes
 2. **Connect** their ideas to unexpected domains or applications
-3. **Accelerate** by suggesting the next concrete step they haven't considered
+3. **Accelerate** by suggesting the next concrete step in their personal lives they haven't considered
 
 Each provocation should:
 - Build directly on something specific they wrote
@@ -107,7 +107,7 @@ Each provocation should:
 - Push their existing thinking further, not sideways
 
 Avoid: generic encouragement, broad motivation, challenging their premises
-Focus on: idea expansion, tactical next moves, creative combinations
+Focus on: idea expansion and tactical next moves
 
 Here are my notes from today:
 ```
