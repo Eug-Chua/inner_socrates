@@ -34,6 +34,10 @@ async def show_menu(update: Update, ctx: ContextTypes.DEFAULT_TYPE, *, edit=Fals
         await update.message.reply_text(text, reply_markup=MAIN_KB)
 
 # ── HANDLERS ───────────────────────────────────────
+async def start(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    ctx.user_data["stage"] = "main"
+    await show_menu(update, ctx)
+
 async def handle_thought(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     await update.callback_query.answer()
 
