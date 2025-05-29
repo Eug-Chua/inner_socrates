@@ -9,7 +9,7 @@ from telegram.ext import (
 from dotenv import load_dotenv
 from src.prompts import (
     thought_of_the_day, coach_insight, executive_assistant,
-    obsidian_ai, socratic_questioner, pattern_detective
+    obsidian_ai, socratic_questioner, pattern_detective, reflection_questions
 )
 
 # ── ENV ─────────────────────────────────────────────
@@ -34,16 +34,32 @@ async def show_menu(update: Update, ctx: ContextTypes.DEFAULT_TYPE, *, edit=Fals
         await update.message.reply_text(text, reply_markup=MAIN_KB)
 
 # ── HANDLERS ───────────────────────────────────────
-async def start(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
-    ctx.user_data["stage"] = "main"
-    await show_menu(update, ctx)
-
 async def handle_thought(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     await update.callback_query.answer()
-    await update.callback_query.edit_message_text(thought_of_the_day(),
-                                                  reply_markup=InlineKeyboardMarkup(
-                                                      [[InlineKeyboardButton("↩️ Back", callback_data="back_to_menu")]]
-                                                  ))
+
+    # ── 1) Generate content ──────────────────────────
+    thought   = thought_of_the_day()
+    questions = reflection_questions(thought)
+
+    # ── 2) Edit the original message to show the thought
+    await update.callback_query.edit_message_text(
+        thought,
+        parse_mode="HTML"
+    )
+
+    # ── 3) Push a NEW message with the Back button
+    await ctx.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=f"<b>Shadow-Work Reflections</b>\n\n{questions}",
+        parse_mode="HTML",
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton("↩️ Back", callback_data="back_to_menu")]]
+        )
+    )
+
+    # track where we are for Back navigation
+    ctx.user_data["stage"] = "thought_reflection"
+
 
 async def handle_steps_button(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
@@ -51,7 +67,7 @@ async def handle_steps_button(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     ctx.user_data['stage'] = 'noise_prompt'
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
-        "💡 Drop your thoughts here. I’ll help you turn your noise into next steps.",
+        "💡 Drop your thoughts below. I’ll help you turn your noise into next steps.",
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton("↩️ Back", callback_data="back_to_menu")]]
         ),
@@ -79,7 +95,7 @@ async def handle_examine_button(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     ctx.user_data['stage'] = 'examine_prompt'
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
-        "🧐 Share what's on your mind. Let's deepen it.",
+        "🧘‍♂️ Share what's on your mind. Let's deepen it.",
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton("↩️ Back", callback_data="back_to_menu")]]
         ),
@@ -110,9 +126,9 @@ async def back_to_menu(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     elif stage == "noise_lenses":
         # rebuild the same kb used earlier
         kb_noise = InlineKeyboardMarkup([
-            [InlineKeyboardButton("🧠 Genius Coach",       callback_data="noise_coach")],
+            [InlineKeyboardButton("🖋️ Leadership Coach",       callback_data="noise_coach")],
             [InlineKeyboardButton("🗂 Executive Assistant", callback_data="noise_exec")],
-            [InlineKeyboardButton("📓 ObsidianAI",          callback_data="noise_obsidian")],
+            [InlineKeyboardButton("🤖 ObsidianAI",          callback_data="noise_obsidian")],
             [InlineKeyboardButton("↩️ Back",               callback_data="back_to_menu")],
         ])
         await update.callback_query.edit_message_text(
@@ -128,13 +144,17 @@ async def back_to_menu(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         kb_ex = InlineKeyboardMarkup([
             [InlineKeyboardButton("⚡️ Socratic Questioner", callback_data="examine_socratic")],
             [InlineKeyboardButton("🫆 Pattern Detective",   callback_data="examine_pattern")],
-            [InlineKeyboardButton("📓 ObsidianAI",          callback_data="examine_obsidian")],
+            [InlineKeyboardButton("🤖 ObsidianAI",          callback_data="examine_obsidian")],
             [InlineKeyboardButton("↩️ Back",               callback_data="back_to_menu")],
         ])
         await update.callback_query.edit_message_text(
             "Choose your lens of inquiry:", reply_markup=kb_ex
         )
         ctx.user_data["stage"] = "examine_prompt"
+
+    elif stage == "thought_reflection":
+        await show_menu(update, ctx, edit=True)
+        ctx.user_data["stage"] = "main"
 
     else:
         # default: main menu
@@ -150,12 +170,12 @@ async def handle_message(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         ctx.user_data["noise_text"] = text
         ctx.user_data['stage'] = 'noise_lenses'
         kb_noise = InlineKeyboardMarkup([
-            [InlineKeyboardButton("🧠 Genius Coach",       callback_data="noise_coach")],
+            [InlineKeyboardButton("🖋️ Leadership Coach",       callback_data="noise_coach")],
             [InlineKeyboardButton("🗂 Executive Assistant", callback_data="noise_exec")],
-            [InlineKeyboardButton("📓 ObsidianAI",          callback_data="noise_obsidian")],
+            [InlineKeyboardButton("🤖 ObsidianAI",          callback_data="noise_obsidian")],
             [InlineKeyboardButton("↩️ Back",               callback_data="back_to_menu")],
         ])
-        await update.message.reply_text("Choose how to process your thoughts:", reply_markup=kb_noise)
+        await update.message.reply_text("🧠 Choose how to process your thoughts:", reply_markup=kb_noise)
         return
 
     if pending_examine_input.pop(user_id, False):
@@ -164,7 +184,7 @@ async def handle_message(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         kb_ex = InlineKeyboardMarkup([
             [InlineKeyboardButton("⚡️ Socratic Questioner", callback_data="examine_socratic")],
             [InlineKeyboardButton("🫆 Pattern Detective",   callback_data="examine_pattern")],
-            [InlineKeyboardButton("📓 ObsidianAI",          callback_data="examine_obsidian")],
+            [InlineKeyboardButton("🤖 ObsidianAI",          callback_data="examine_obsidian")],
             [InlineKeyboardButton("↩️ Back",               callback_data="back_to_menu")],
         ])
         await update.message.reply_text("Choose your lens of inquiry:", reply_markup=kb_ex)
@@ -179,7 +199,7 @@ async def end_cmd(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     pending_examine_input.pop(user_id, None)
     ctx.user_data.clear()
     await update.message.reply_text(
-        "✅ Convo ended. Type /start whenever you’d like to begin again."
+        "✅ Convo ended. Type /start whenever you’d like another cognitive boost."
     )
 
 # ── BUILD APPLICATION ──────────────────────────────
