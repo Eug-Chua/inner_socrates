@@ -7,10 +7,9 @@ from telegram.ext import (
     MessageHandler, filters,
 )
 from dotenv import load_dotenv
-from src.prompts import (
-    thought_of_the_day, coach_insight, executive_assistant,
-    obsidian_ai, socratic_questioner, pattern_detective, reflection_questions
-)
+from src.thought import thought_of_the_day, reflection_questions
+from src.noise_prompts import coach_insight, executive_assistant, obsidian_ai
+from src.examine_prompts import socratic_questioner, pattern_detective, obsidian_ai
 
 # ── ENV ─────────────────────────────────────────────
 load_dotenv()
