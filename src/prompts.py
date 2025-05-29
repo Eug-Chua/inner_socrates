@@ -233,7 +233,7 @@ Guidelines:
 - Use bullet points
 
 Follow this stylistic framework:
-{stylistic_framework}
+{narrator_archetype}
 
 Here is the note:
 ```
