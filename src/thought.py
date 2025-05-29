@@ -109,7 +109,7 @@ def reflection_questions(thought: str) -> str:
 The following is a stylized philosophical insight designed to emotionally resonate:
 
 ```
-"{thought.strip()}"
+{thought.strip()}
 ```
 
 Now, as a depth-oriented shadow work facilitator, generate 3 reflection questions that:
