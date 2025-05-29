@@ -10,11 +10,11 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 philosophers = ["Socrates", "Plato", "Aristotle", "Immanuel Kant", "St. Augustine", "Friedrich Nietzsche"]
 
 themes = [
-    "intellectual humility", "contemplation", "Solvitur ambulando", "reflection", "self-awareness",
+    "intellectual humility", "contemplation", "reflection", "self-awareness",
     "status games", "social influence", "desire for power", "humility",
     "one-upmanship", "the need to be better than others to feel safe",
     "our social nature", "the primal need for validation", "presenting a false self", "self-presentation",
-    "the desire for acclaim", "the benefits of social status", "social capital", "mimetic desire",
+    "the desire for acclaim", "the benefits of social status", "social capital", "mimetic desire", 
     "self-interest", "selfishness", "our natural pride", "ego", "status anxiety",
     "feeling less than others", "feeling better than others", "self-leadership", "self-mastery"
     ]
@@ -36,11 +36,27 @@ target_audience_belief = [
 
 stylistic_framework = f"""
 - Embrace rhythmic cadence and internal rhyme where appropriate.
-- Favor structures that sound poetic but grounded.
-- Mix short sentences for impact with reflective ones to unravel complexity.  
-- Vary rhythm for tension and release. Build, pause, then strike.
+- Mix short sentences for impact with reflective ones to unravel complexity.
+- Vary rhythm for tension and release. Build, pause, then release insight.
 - Avoid: generic encouragement, broad motivation, challenging their premises
 - Focus on: idea expansion and tactical next moves
+"""
+
+narrator_archetype = f"""
+Narrator Archetype:
+Philosophical mentor meets shadow work facilitator. You are not an expert explaining, but a seer inviting the reader to examine themselves more honestly.
+
+Narrative POV:
+Always write in second person for resonance and intimacy.
+
+Tone:
+- Introspective
+- Disruptively compassionate
+- Calm but exacting
+- Never condescending; always affirming the reader’s depth while nudging them toward discomfort
+
+Purpose:
+Help the reader see what they haven’t seen, name what they’ve avoided, and reclaim what they’ve disowned — intellectually and emotionally.
 """
 
 def thought_of_the_day() -> str:
@@ -60,9 +76,9 @@ Write a truth bomb about {selected_theme} that {selected_target_audience_belief}
 ---
 
 🧠 Emotional Evocation  
-- Use emotionally charged metaphors, vivid imagery, and psychological insight.  
-- Evoke emotions like vulnerability, awe, frustration, tenderness — without melodrama.  
-- Let the writing feel compassionate but never sentimental.  
+- Use emotionally charged metaphors, vivid imagery, and psychological insight.
+- Evoke emotions like vulnerability, awe, frustration, tenderness — without melodrama.
+- Let the writing feel compassionate but never sentimental.
 
 🎵 Musicality of Language  
 - Use alliteration, assonance, and rhythmic phrasing.  
@@ -102,9 +118,35 @@ Keep it to no more than 150 words.
 
     return response.choices[0].message.content.strip()
 
+def reflection_questions(thought: str) -> str:
+    """
+    Given a truth-bomb, ask three shadow-work questions.
+    """
+    prompt = f"""
+The following is a stylized philosophical insight designed to emotionally resonate:
+
+```
+"{thought.strip()}"
+```
+
+Now, as a depth-oriented shadow work facilitator, generate 3 reflection questions that:
+- Illuminate what this insight reveals about rejected or hidden aspects of the self
+- Surface unconscious patterns, defenses, coping strategies or projections at play
+- Invite confrontation with uncomfortable truths and disowned parts - and discover the gold in that shadow 
+
+Focus on the shadow elements: what's being avoided, repressed, or projected onto others. Make each question penetrating enough to breach psychological defenses and reveal the gold hidden in darkness.
+""".strip()
+    
+    response = client.chat.completions.create(
+        model=os.getenv("OPENAI_GPT_MODEL_ADVANCED"),
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.7,
+        )
+    return response.choices[0].message.content.strip()
+
 def coach_insight(query: str) -> str:
     prompt = f"""
-Act as an insightful coach. Review my notes from today and expand my thinking. Send me three messages to unlock my hidden potential based on my notes.
+Act as an insightful self-leadership coach. Review my notes and expand my thinking. Send me three messages to unlock my hidden potential based on my notes.
 
 Generate three specific, actionable provocations that:
 1. **Amplify** the most promising idea from their notes
@@ -112,10 +154,10 @@ Generate three specific, actionable provocations that:
 3. **Accelerate** by suggesting the next concrete step they haven't considered in honing self-leadership
 
 Each provocation should:
-- Be specifc
+- Be specific
 - Include an immediate "what if you..." or "try this..." element
 - Push their existing thinking further, not sideways
-- Have a concrete action point
+- Have a concrete, measurable, achievable, and relevant action point
 
 Follow this stylistic framework:
 {stylistic_framework}
@@ -145,7 +187,7 @@ Format as:
 Requirements:
 - Action items with estimated time/effort and priority levels
 - Group related items under simple category headings
-- Include both explicit tasks and second-order next steps
+- Include both explicit first-order tasks and second-order next steps
 - Keep language action-oriented (start with verbs)
 - Instill self-belief and self-leadership
 
@@ -227,6 +269,7 @@ Send me three probing questions that will make me see my own ideas differently -
 
 Requirements:
 - Three specific, challenging questions (not validation)
+- Use bullet points
 - Tone: {tone}
 
 Here is my text:
