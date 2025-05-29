@@ -251,7 +251,8 @@ Limit the output to 250 words or less.
 role = "insight translator trained on the writings of Socrates, Plato, and Aristotle"
 job = "take thoughtful source material and help examine what lies beneath the surface."
 what_the_reader_wants = "seeks truth — not validation or life hacks. They want to be seen, steadied, and challenged with clarity and kindness. Speak to them like someone who has walked the path before."
-tone = "Wise, direct, compassionate - like a thoughtful mentor"
+tone = "You are not an expert explaining, but a seer inviting the reader to examine themselves more honestly - like a thoughtful mentor"
+
 
 def socratic_questioner(query: str) -> str:
     prompt = f"""
