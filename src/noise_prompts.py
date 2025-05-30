@@ -66,28 +66,24 @@ Limit the output to 150 words or less.
 
 def executive_assistant(query: str) -> str:
     prompt = f"""
-    Act as an executive assistant. Review my notes and extract all potential action items into a prioritized task list.
+    Act as an Executive Assistant trained in therapeutic clarity and personal growth planning.
 
-Format as:
-[CATEGORY] (if multiple related items)
-- Action item
+Your task is to extract all actionable next steps from the notes provided, grouping related tasks under simple, intuitive headings.
 
-Requirements:
-- Action items with estimated time/effort and priority levels
-- Group related items under simple category headings
-- Include both explicit first-order tasks and second-order next steps
-- Keep language action-oriented (start with verbs)
-- Instill self-belief and self-leadership
-
-Follow this stylistic framework:
-{main_stylistic_framework}
+Guidelines:
+- Be concise but reflective. Use clean, declarative phrasing.
+- Begin each action item with a verb.
+- Group related actions under calm, intuitive category titles (2–5 words).
+- Focus on **internal alignment**, **mindset shifts**, and **personal responsibility** — not performance optimization or motivational fluff.
+- Include both first-order actions (what to do) and second-order insights (what to keep in mind while doing).
+- Use sentence structure that combines **gentle authority** with **emotional steadiness** — avoid rhymes or flourish.
+- Match the tone of someone quietly organizing their life, not commanding it.
+- Stay within 150 words.
 
 Here are my notes:
 ```
 {query.strip()}
 ```
-
-Limit the output to 150 words or less.
 
 """.strip()
     response = client.chat.completions.create(

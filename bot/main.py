@@ -1,5 +1,4 @@
 import os, sys
-import asyncio
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -51,9 +50,6 @@ async def handle_thought(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         thought,
         parse_mode="HTML"
     )
-
-    # wait 3 seconds
-    await asyncio.sleep(3)
 
     # ── 3) Push a NEW message with the Back button
     await ctx.bot.send_message(
