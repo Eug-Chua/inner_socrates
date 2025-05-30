@@ -16,7 +16,12 @@ themes = [
     "our social nature", "the primal need for validation", "presenting a false self", "self-presentation",
     "the desire for acclaim", "the benefits of social status", "social capital", "mimetic desire", 
     "self-interest", "selfishness", "our natural pride", "ego", "status anxiety",
-    "feeling less than others", "feeling better than others", "self-leadership", "self-mastery"
+    "feeling less than others", "feeling better than others", "self-leadership", "self-mastery",
+    "fear of insignificance", "fear of irrelevance", "emotional safety through status", "our search for psychological shelter",
+    "toxic resilience", "performative authenticity", "ego disguised as enlightenment", "pseudo-growth",
+    "the loneliness of leadership", "hidden envy among peers", "power without intimacy", "leadership as armor",
+    "social mirroring", "emotional contagion", "subtle dominance rituals", "unconscious imitation",
+    "identity as performance", "burnout from persona maintenance", "success without self", "validation addiction"
     ]
 
 target_audience_belief = [
