@@ -4,3 +4,4 @@ python-dotenv
 dotenv
 nest_asyncio
 aiohttp
+tiktoken
