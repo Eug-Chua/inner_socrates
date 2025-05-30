@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 from src.thought import thought_of_the_day, reflection_questions
 from src.noise_prompts import coach_insight, executive_assistant, obsidian_ai
 from src.examine_prompts import socratic_questioner, pattern_detective, obsidian_ai
+from src.utils.input_guard import exceeds_token_limit, contains_suspicious_patterns
 
 # ── ENV ─────────────────────────────────────────────
 load_dotenv()
@@ -168,6 +169,15 @@ async def back_to_menu(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 async def handle_message(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     text    = update.message.text.strip()
+
+    # Guardrails: Block long or suspicious input
+    if exceeds_token_limit(text):
+        await update.message.reply_text("⚠️ Your message is too long. Try to keep it under 500 words.")
+        return
+
+    if contains_suspicious_patterns(text):
+        await update.message.reply_text("🚫 I detected suspicious content. Please keep it reflective and respectful.")
+        return
 
     if pending_noise_input.pop(user_id, False):
         ctx.user_data["noise_text"] = text
