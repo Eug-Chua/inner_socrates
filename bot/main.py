@@ -68,7 +68,6 @@ async def handle_thought(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     # track where we are for Back navigation
     ctx.user_data["stage"] = "thought_reflection"
 
-
 async def handle_steps_button(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     pending_noise_input[user_id] = True
