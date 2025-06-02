@@ -20,7 +20,7 @@ They don't change us.
 This bot aspires to fix that. It nudges and probes us into thinking deeper—not by giving us answers, but by helping us discover better questions. Because real understanding isn't downloaded; it's earned through the slow work of grappling with ideas until they become part of who we are.
 
 ## What It Does
-- Dispenses daily “thought bombs” from stylized philosophers like Socrates, Nietzsche, or Kant
+- Dispenses truth bombs from stylized philosophers like Socrates, Nietzsche, or Kant
 - Automatically follows up with penetrating shadow-work questions
 
 It also lets you submit your own thoughts and choose how to process them:
