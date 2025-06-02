@@ -1,12 +1,12 @@
 # DM Socrates - A Telegram Bot for Deep Thinking
-> *Your inner Socrates. Now in your DMs.*
+Have you confused the aesthetic of deep thinking with the experience of it?
 
-A Telegram bot that combines deep questioning with strategic clarity—not by downloading insights into your brain, but by nudging you to discover them yourself.
+This Telegram bot combines deep questioning with strategic clarity for your own life—not by downloading insights into your brain, but by nudging you to discover them yourself.
 
 ## Why I Made This Bot
-This bot was inspired by Ezra Klein's [Beyond the 'Matrix' Theory of the Mind](https://www.nytimes.com/2023/05/28/opinion/artificial-intelligence-thinking-minds-concentration.html).
+This bot was inspired by [Beyond the 'Matrix' Theory of the Mind](https://www.nytimes.com/2023/05/28/opinion/artificial-intelligence-thinking-minds-concentration.html).
 
-In that article, he talks about the fantasy many of us have:
+In that article, the author draws out the fantasy many of us have:
 > *If only we had a little jack in the back of our necks like in "The Matrix", we could download the knowledge of a book into ours heads (or, to use the movie’s example, a kung fu master), and then we'd have it, instantly.*
 
 But that misses much of what’s really happening when we spend hours reading a book and thinking about it.
@@ -44,7 +44,7 @@ It also lets you submit your own thoughts and choose how to process them:
 ## Usage/Commands
 - `/start` - Initialize the bot and get welcome message
 - `/end` - End the conversation
-- Simply tap on the "Musing of the Day" button to receive daily thought bombs or enter in your own thoughts
+- Simply tap on the "Musing of the Day" button to receive thought bombs or enter in your own thoughts
 - Choose from different processing lenses: `Leadership Coach`, `Executive Assistant`, `Socratic Questioner`, `Pattern Detective`, or `ObsidianAI`.
 
 ## Getting Started
